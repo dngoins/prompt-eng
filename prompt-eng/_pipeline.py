@@ -2,6 +2,7 @@ import requests
 import json
 import os
 import time
+import argparse
 
 def load_config():
     """
@@ -31,15 +32,14 @@ def load_config():
                 key, value = line.split('=', 1)
                 os.environ[key.strip()] = value.strip()
 
-
 def create_payload(model, prompt, target="ollama", **kwargs):
     """
     @NOTE: 
     Need to adjust here to support multiple target formats
-    target can be only ('ollama' or 'open-webui')
+    target can be only ('ollama-local', 'ollama-remote' or 'open-webui')
     """
     payload = None
-    if target == "ollama":
+    if target == "ollama" or target == "ollama-local" or target == "ollama-remote":
         payload = {
             "model": model,
             "prompt": prompt, 
@@ -48,7 +48,7 @@ def create_payload(model, prompt, target="ollama", **kwargs):
         if kwargs:
             payload["options"] = {key: value for key, value in kwargs.items()}
 
-    elif target == "open-webui":
+    elif target == "open-webui-remote":
         payload = {
             "model": model,
             "messages": [ {"role" : "user", "content": prompt } ]
@@ -59,7 +59,6 @@ def create_payload(model, prompt, target="ollama", **kwargs):
     else:
         print(f'!!ERROR!! Unknown target: {target}')
     return payload
-
 
 def model_req(payload=None):
     """
@@ -79,9 +78,6 @@ def model_req(payload=None):
     headers = dict()
     headers["Content-Type"] = "application/json"
     if api_key: headers["Authorization"] = f"Bearer {api_key}"
-
-    #print(url, headers)
-    #print(payload)
 
     # Send out request to Model Provider
     try:
@@ -115,18 +111,28 @@ def model_req(payload=None):
         return -1, f"!!ERROR!! HTTP Response={response.status_code}, {response.text}"
     return
 
-
-###
-### DEBUG
-###
-
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Run the model pipeline")
+    parser.add_argument("prompt", type=str, default="1+1", nargs='?', help="The prompt to be used")
+    parser.add_argument("target", choices=["ollama-local", "ollama-remote", "open-webui-remote"], default="open-webui-remote", nargs='?', help="The target to be used")
+    parser.add_argument("model", type=str, default="phi4:latest", nargs='?', help="The model name to be used")
+    parser.add_argument("system_instructions", type=str, default="Act like you are a math teacher\nYour student is asking:", nargs='?', help="The system message or instructions to be used")
+    parser.add_argument("format_response", type=str, default="Give only the answer; refrain from any more information", nargs='?', help="Tells the agent how to format the response")
+    args = parser.parse_args()
+
     from _pipeline import create_payload, model_req
-    MESSAGE = "1 + 1"
-    PROMPT = MESSAGE 
+    _PROMPT = args.prompt
+    TARGET = args.target
+    MODEL = args.model
+    
+    TEMPLATE_BEFORE = args.system_instructions
+    TEMPLATE_AFTER = args.format_response
+    
+    PROMPT = TEMPLATE_BEFORE + '\n' + _PROMPT + '\n' + TEMPLATE_AFTER
+
     payload = create_payload(
-                         target="open-webui",   
-                         model="qwen2:latest", 
+                         target=TARGET,   
+                         model=MODEL, 
                          prompt=PROMPT, 
                          temperature=1.0, 
                          num_ctx=100, 
