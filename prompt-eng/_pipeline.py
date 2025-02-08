@@ -54,7 +54,7 @@ def create_payload(model, prompt, target="ollama", **kwargs):
             "messages": [ {"role" : "user", "content": prompt } ]
         }
 
-        payload.upload({key: value for key, value in kwargs.items()})
+        payload.update({key: value for key, value in kwargs.items()})
     
     else:
         print(f'!!ERROR!! Unknown target: {target}')
@@ -125,8 +125,8 @@ if __name__ == "__main__":
     MESSAGE = "1 + 1"
     PROMPT = MESSAGE 
     payload = create_payload(
-                         target="ollama",   
-                         model="llama3.2:latest", 
+                         target="open-webui",   
+                         model="qwen2:latest", 
                          prompt=PROMPT, 
                          temperature=1.0, 
                          num_ctx=100, 
