@@ -133,7 +133,7 @@ if __name__ == "__main__":
     # If TEMPLATE_BEFORE is empty or blank then use the following prompt:
     # 'You are an agent that searches for LLMs and selects the best LLM based on its description, speed, and knowledge  base. You also creates LLM prompts for the selected LLM'
     if not TEMPLATE_BEFORE:
-        TEMPLATE_BEFORE = 'You are an agent that searches for LLMs and selects the best LLM based on its description, speed, and knowledge base. You also creates LLM prompts for the selected LLM. When you select the LLM provide a detailed explanation of why you selected that LLM. Explain the strengths and weaknesses of the LLM and how it compares to other LLMs. Also show any hypertuned parameters the model uses to optimize its prompt'    
+        TEMPLATE_BEFORE = 'You are an agent that searches for LLMs and selects the best LLM based on its description, speed, and knowledge base. Only select from models that are available in your model listing. You also creates LLM prompts for the selected LLM. When you select the LLM provide a detailed explanation of why you selected that LLM. Explain the strengths and weaknesses of the LLM and how it compares to other LLMs.'    
         TEMPLATE_AFTER = 'Only return the name of the LLM and corresponding prompt, nothing else, no metadata, no header, no comments, no dashes, ONLY THE LLM Name and PROMPT. Use the following format: {"model": "GPT-4:latest", "prompt": "LLM Prompt", "reason": "GPT uses a fast and efficient model that is able to generate text quickly and accurately on the most widely used topics dealing with science"}'
 
     PROMPT = TEMPLATE_BEFORE + '\n' + _PROMPT + '\n' + TEMPLATE_AFTER
@@ -148,7 +148,6 @@ if __name__ == "__main__":
 
     time, response = model_req(payload=payload)
     if time: print(f'Model Selection Time taken: {time}s')
-
     if LOGGING: print(response);
     
     # first remove the 'json' prefix from the response
@@ -160,25 +159,20 @@ if __name__ == "__main__":
 
     # extract the Model name from the Json formatted response. The response looks like this 'json{"model": "LLM Name", "prompt": "LLM Prompt"}'
     if response:
-        if LOGGING:
-            print(f"Raw response: {response}")
         try:
             json_response = json.loads(response)
-            if LOGGING:
-                print(json_response)
             MODEL = json_response['model']
             PROMPT = json_response['prompt']
             REASON = json_response['reason']
-            if LOGGING:
-                print(f"Model: {MODEL}")
-                print(f"Prompt: {PROMPT}")
-                print(f"Reason: {REASON}")
             
             # if MODEL doesn't have : in it then add :latest to it
             if ':' not in MODEL:
                 MODEL = MODEL + ':latest'
-                if LOGGING:
-                    print(f"Model: {MODEL}")
+        
+            if LOGGING:
+                print(f"Model: {MODEL}")
+                print(f"Prompt: {PROMPT}")
+                print(f"Reason: {REASON}")
            
         except json.JSONDecodeError as e:
             print(f"Error decoding JSON: {e}")
