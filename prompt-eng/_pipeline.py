@@ -118,6 +118,7 @@ if __name__ == "__main__":
     parser.add_argument("--model", type=str, default="phi4:latest", nargs='?', help="The model name to be used")
     parser.add_argument("--system_instructions", type=str, default="", nargs='?', help="The system message or instructions to be used")
     parser.add_argument("--format_response", type=str, default="", nargs='?', help="Tells the agent how to format the response")
+    parser.add_argument("--logging", type=bool, default=False, nargs='?', help="writes out logs for the process steps")
     args = parser.parse_args()
 
     from _pipeline import create_payload, model_req
@@ -127,7 +128,14 @@ if __name__ == "__main__":
     
     TEMPLATE_BEFORE = args.system_instructions
     TEMPLATE_AFTER = args.format_response
-    
+    LOGGING = args.logging
+
+    # If TEMPLATE_BEFORE is empty or blank then use the following prompt:
+    # 'You are an agent that searches for LLMs and selects the best LLM based on its description, speed, and knowledge  base. You also creates LLM prompts for the selected LLM'
+    if not TEMPLATE_BEFORE:
+        TEMPLATE_BEFORE = 'You are an agent that searches for LLMs and selects the best LLM based on its description, speed, and knowledge base. You also creates LLM prompts for the selected LLM. When you select the LLM provide a detailed explanation of why you selected that LLM. Explain the strengths and weaknesses of the LLM and how it compares to other LLMs. Also show any hypertuned parameters the model uses to optimize its prompt'    
+        TEMPLATE_AFTER = 'Only return the name of the LLM and corresponding prompt, nothing else, no metadata, no header, no comments, no dashes, ONLY THE LLM Name and PROMPT. Use the following format: {"model": "GPT-4:latest", "prompt": "LLM Prompt", "reason": "GPT uses a fast and efficient model that is able to generate text quickly and accurately on the most widely used topics dealing with science"}'
+
     PROMPT = TEMPLATE_BEFORE + '\n' + _PROMPT + '\n' + TEMPLATE_AFTER
 
     payload = create_payload(
@@ -139,5 +147,52 @@ if __name__ == "__main__":
                          num_predict=100)
 
     time, response = model_req(payload=payload)
-    print(response)
-    if time: print(f'Time taken: {time}s')
+    if time: print(f'Model Selection Time taken: {time}s')
+
+    if LOGGING: print(response);
+    
+    # first remove the 'json' prefix from the response
+    response = response.replace('json', '')
+
+    # now remove the ``` from the response
+    response = response.replace('```', '')  
+
+
+    # extract the Model name from the Json formatted response. The response looks like this 'json{"model": "LLM Name", "prompt": "LLM Prompt"}'
+    if response:
+        if LOGGING:
+            print(f"Raw response: {response}")
+        try:
+            json_response = json.loads(response)
+            if LOGGING:
+                print(json_response)
+            MODEL = json_response['model']
+            PROMPT = json_response['prompt']
+            REASON = json_response['reason']
+            if LOGGING:
+                print(f"Model: {MODEL}")
+                print(f"Prompt: {PROMPT}")
+                print(f"Reason: {REASON}")
+            
+            # if MODEL doesn't have : in it then add :latest to it
+            if ':' not in MODEL:
+                MODEL = MODEL + ':latest'
+                if LOGGING:
+                    print(f"Model: {MODEL}")
+           
+        except json.JSONDecodeError as e:
+            print(f"Error decoding JSON: {e}")
+            print(f"Response content: {response}")
+        
+
+    real_payload = create_payload( target = TARGET,
+                         model=MODEL, 
+                         prompt=PROMPT, 
+                         temperature=1.0, 
+                         num_ctx=100, 
+                         num_predict=100)
+
+    real_time, real_response = model_req(payload=real_payload)
+
+    print(real_response)
+    if real_time: print(f'Total Time taken: {real_time + time}s')
