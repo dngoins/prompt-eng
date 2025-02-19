@@ -4,6 +4,63 @@ import os
 import time
 import argparse
 
+def list_models():
+    try:
+        load_config()
+    except:
+        return -1, f"!!ERROR!! Problem loading prompt-eng/_config"
+
+    url = os.getenv('URL_BASE', None)
+    api_key = os.getenv('API_KEY', None)
+    
+    headers = dict()
+    headers["Content-Type"] = "application/json"
+    if api_key: headers["Authorization"] = f"Bearer {api_key}"
+
+    # Send out request to Model Provider
+    try:
+        response = requests.get(f'{url}/api/models', headers=headers)
+        models = response.json()
+        models = models["data"]
+        # the models json looks like this: 
+                
+    except:
+        return -1, f"!!ERROR!! Request failed! You need to adjust prompt-eng/config with URL({url})"
+
+    # Checking the response and extracting the 'response' field
+    if response is None:
+        return -1, f"!!ERROR!! There was no response (?)"
+    elif response.status_code == 200:
+        return models
+   
+def extractParameterSize(parameter_size):
+    if parameter_size.endswith("M"):
+        return float(parameter_size[:-1])
+    elif parameter_size.endswith("B"):
+        return float(parameter_size[:-1]) * 1000
+
+
+def evaluate_models(models):
+    best_model = None
+    best_score = float('-inf')
+    
+    for model in models:
+        description = model['info']['meta']['description']
+        
+        examples = model['info']['meta']['suggestion_prompts']
+        # Example evaluation logic: prioritize models with higher parameter count
+        if 'ollama' in model:
+            score = extractParameterSize(model['ollama']['details']['parameter_size'])
+        else:
+            score = 0
+       
+        if score > best_score:
+            best_score = score
+            best_model = model
+    
+    return best_model
+
+
 def load_config():
     """
     Load config file looking into multiple locations
@@ -130,6 +187,17 @@ if __name__ == "__main__":
     TEMPLATE_AFTER = args.format_response
     LOGGING = args.logging
 
+    # ollama_client = ollama()
+    # model_list = ollama_client.list_models()
+    # for model in model_list: print(f"Model Name: {model.name}, Version: {model.version}, Description: {model.description}")
+
+    models =   list_models()
+    if LOGGING: print(models)
+
+    MODEL = evaluate_models(models)
+    MODEL = MODEL['name']
+    if LOGGING: print(f'BestModel: {MODEL}')
+
     # If TEMPLATE_BEFORE is empty or blank then use the following prompt:
     # 'You are an agent that searches for LLMs and selects the best LLM based on its description, speed, and knowledge  base. You also creates LLM prompts for the selected LLM'
     if not TEMPLATE_BEFORE:
@@ -147,7 +215,7 @@ if __name__ == "__main__":
                          num_predict=100)
 
     time, response = model_req(payload=payload)
-    if time: print(f'Model Selection Time taken: {time}s')
+    if time: print(f'{MODEL} Selection Time taken: {time}s')
     if LOGGING: print(response);
     
     # first remove the 'json' prefix from the response
