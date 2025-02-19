@@ -113,11 +113,11 @@ def model_req(payload=None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run the model pipeline")
-    parser.add_argument("prompt", type=str, default="1+1", nargs='?', help="The prompt to be used")
-    parser.add_argument("target", choices=["ollama-local", "ollama-remote", "open-webui-remote"], default="open-webui-remote", nargs='?', help="The target to be used")
-    parser.add_argument("model", type=str, default="phi4:latest", nargs='?', help="The model name to be used")
-    parser.add_argument("system_instructions", type=str, default="Act like you are a math teacher\nYour student is asking:", nargs='?', help="The system message or instructions to be used")
-    parser.add_argument("format_response", type=str, default="Give only the answer; refrain from any more information", nargs='?', help="Tells the agent how to format the response")
+    parser.add_argument("prompt", type=str, default="", nargs='?', help="The prompt to be used")
+    parser.add_argument("--target", choices=["ollama-local", "ollama-remote", "open-webui-remote"], default="open-webui-remote", nargs='?', help="The target to be used")
+    parser.add_argument("--model", type=str, default="phi4:latest", nargs='?', help="The model name to be used")
+    parser.add_argument("--system_instructions", type=str, default="", nargs='?', help="The system message or instructions to be used")
+    parser.add_argument("--format_response", type=str, default="", nargs='?', help="Tells the agent how to format the response")
     args = parser.parse_args()
 
     from _pipeline import create_payload, model_req
