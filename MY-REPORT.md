@@ -70,62 +70,165 @@ The assumption is the public model is trained on information about each loaded m
 
 # Results
 
-Describe the results achieved through your research process.
+The process starts with determining which models are loaded and available in Ollama. A simple API call to the Ollama servers determines the list of models available. The list of models is then used to determine which model to use for the task. 
 
-    ```bash
-        PS C:\Users\dngoi\source\repos\github\dngoins\prompt-eng> python .\prompt-eng\_pipeline.py "help me with building a flying car" --logging=True > Results.txt
+A prompt is created for the model of choice to ask it to select from the downloaded list of models. The prompt asks the model to selects the best model based on the description and examples of the models, and best fit. The prompt alsl asks the model of choice to provide an explanation or reason of why the model was selected.
 
-        BestModel: mistral-large:latest
-    
-        Prompt: You are an agent that searches for LLMs and selects the best LLM based on its description, parameter size, speed, and knowledge base. Only select from the model names: ['Llama-3.2-3B-Instruct', 'Llama-3.2-11B-Vision-Instruct', 'tinyllama:latest', 'codestral:latest', 'llava:latest', 'phi4:latest', 'qwen2:latest', 'gemma2:27b', 'mistral-large:latest']. Based on the parameter size, mistral-large:latest is the best model, but choose another if its description better matches the prompt. As an agent, you also create LLM prompts for the selected LLM. When you select the LLM provide a detailed explanation of why you selected that LLM. Explain the strengths and weaknesses of the LLM and how it compares to other LLMs. help me with building a flying car. Only return the name of the LLM and corresponding prompt, nothing else, no metadata, no header, no comments, no dashes, ONLY THE LLM Name and PROMPT. Use the following format: {"model": "GPT-4:latest", "prompt": "LLM Prompt", "reason": "GPT uses a fast and efficient model that is able to generate text quickly and accurately on the most widely used topics dealing with science"}
+Below is the full output of the process:
 
-        Payload:
-    
-        {'model': 'phi4:latest', 'messages': [{'role': 'user', 'content': 'You are an agent that searches for LLMs and selects the best LLM based on its description, parameter size, speed, and knowledge base. Only select from the model names: [\'Llama-3.2-3B-Instruct\', \'Llama-3.2-11B-Vision-Instruct\', \'tinyllama:latest\', \'codestral:latest\', \'llava:latest\', \'phi4:latest\', \'qwen2:latest\', \'gemma2:27b\', \'mistral-large:latest\']. Based on the parameter size, mistral-large:latest is the best model, but choose another if its description better matches the prompt. As an agent, you also create LLM prompts for the selected LLM. When you select the LLM provide a detailed explanation of why you selected that LLM. Explain the strengths and weaknesses of the LLM and how it compares to other LLMs.\nhelp me with building a flying car\nOnly return the name of the LLM and corresponding prompt, nothing else, no metadata, no header, no comments, no dashes, ONLY THE LLM Name and PROMPT. Use the following format: {"model": "GPT-4:latest", "prompt": "LLM Prompt", "reason": "GPT uses a fast and efficient model that is able to generate text quickly and accurately on the most widely used topics dealing with science"}'}], 'temperature': 1.0, 'num_ctx': 100, 'num_predict': 100}
-    
-        mistral-large:latest Selection Time taken: 10.594s
-    
-        json
-        {
-        "model": "codestral:latest",
-        "prompt": "Designing a flying car involves integrating elements of automotive engineering, aviation technology, and regulatory compliance. Consider key aspects such as propulsion systems, aerodynamics, lightweight materials, safety features, control mechanisms, energy efficiency, and certification processes for both road and air travel. What are the primary engineering challenges one must address to successfully create a functional flying car?",
-        "reason": "Codestral:latest is designed with an emphasis on coding and technical tasks, which makes it particularly suited for tackling complex engineering projects such as building a flying car. While Mistral-large:latest might have a larger parameter size suggesting potentially broader general knowledge, Codestral's specialized focus on technology-related prompts allows it to more effectively address specific engineering challenges like propulsion systems and material considerations that are crucial in developing a functional flying car. This makes it better suited for this task compared to other models which may not be as tailored towards such technical depth."
-        }
+**********
+Ollama Registered Parameter Size BestModel:
+mistral-large:latest
+*******
+
+Choose Model Prompt: You are an agent that searches for LLMs and selects the best LLM based on its description, parameter size, speed, and knowledge base. Only select from the model names: ['Llama-3.2-3B-Instruct', 'Llama-3.2-11B-Vision-Instruct', 'tinyllama:latest', 'codestral:latest', 'llava:latest', 'phi4:latest', 'gemma2:27b', 'qwen2:latest', 'mistral-large:latest']. Based on the parameter size, mistral-large:latest is the best model, but choose another if its description better matches the prompt. As an agent, you also create LLM prompts for the selected LLM. When you select the LLM provide a detailed explanation of why you selected that LLM. Explain the strengths and weaknesses of the LLM and how it compares to other LLMs.
+Can you help me write a C++ application that uses Ollama to invoke the phi3 LLM? Please try to use the LlamaCPP library as well.
+Only return the name of the LLM and corresponding prompt, nothing else, no metadata, no header, no comments, no dashes, ONLY THE LLM Name and PROMPT. Use the following format: {"model": "GPT-4:latest", "prompt": "LLM Prompt", "reason": "GPT uses a fast and efficient model that is able to generate text quickly and accurately on the most widely used topics dealing with science"}
+
+
+Payload:
+
+{'model': 'phi4:latest', 'messages': [{'role': 'user', 'content': 'You are an agent that searches for LLMs and selects the best LLM based on its description, parameter size, speed, and knowledge base. Only select from the model names: [\'Llama-3.2-3B-Instruct\', \'Llama-3.2-11B-Vision-Instruct\', \'tinyllama:latest\', \'codestral:latest\', \'llava:latest\', \'phi4:latest\', \'gemma2:27b\', \'qwen2:latest\', \'mistral-large:latest\']. Based on the parameter size, mistral-large:latest is the best model, but choose another if its description better matches the prompt. As an agent, you also create LLM prompts for the selected LLM. When you select the LLM provide a detailed explanation of why you selected that LLM. Explain the strengths and weaknesses of the LLM and how it compares to other LLMs.\nCan you help me write a C++ application that uses Ollama to invoke the phi3 LLM? Please try to use the LlamaCPP library as well.\nOnly return the name of the LLM and corresponding prompt, nothing else, no metadata, no header, no comments, no dashes, ONLY THE LLM Name and PROMPT. Use the following format: {"model": "GPT-4:latest", "prompt": "LLM Prompt", "reason": "GPT uses a fast and efficient model that is able to generate text quickly and accurately on the most widely used topics dealing with science"}'}], 'temperature': 1.0, 'num_ctx': 100, 'num_predict': 100}
+
+
+phi4:latest Selected Time taken: 12.791s
+
+```json
+{
+  "model": "phi4:latest",
+  "prompt": "Please provide instructions for writing a C++ application that utilizes Ollama to invoke the phi3 LLM. The implementation should integrate the LlamaCPP library for communication and demonstrate proper setup, initialization, and usage of the language model. Include sample code snippets and explanations where necessary.",
+  "reason": "phi4:latest is selected due to its balance between parameter size and performance capabilities. With a large number of parameters like GPT-3 models, it excels in generating high-quality text outputs while maintaining reasonable inference speeds. Although 'mistral-large:latest' has the largest parameter size among the options listed, phi4:latest offers a strong compromise with efficient speed and robust understanding required for complex tasks such as programming-related prompts. It is particularly well-suited to applications requiring advanced language comprehension and generation in software development contexts."
+}
+```
+
+phi4:latest Selected Model: phi4:latest
+
+Prompt: Please provide instructions for writing a C++ application that utilizes Ollama to invoke the phi3 LLM. The implementation should integrate the LlamaCPP library for communication and demonstrate proper setup, initialization, and usage of the language model. Include sample code snippets and explanations where necessary.
+
+Reason: phi4:latest is selected due to its balance between parameter size and performance capabilities. With a large number of parameters like GPT-3 models, it excels in generating high-quality text outputs while maintaining reasonable inference speeds. Although 'mistral-large:latest' has the largest parameter size among the options listed, phi4:latest offers a strong compromise with efficient speed and robust understanding required for complex tasks such as programming-related prompts. It is particularly well-suited to applications requiring advanced language comprehension and generation in software development contexts.
+
+Payload:
+
+{'model': 'phi4:latest', 'messages': [{'role': 'user', 'content': 'Please provide instructions for writing a C++ application that utilizes Ollama to invoke the phi3 LLM. The implementation should integrate the LlamaCPP library for communication and demonstrate proper setup, initialization, and usage of the language model. Include sample code snippets and explanations where necessary.'}], 'temperature': 1.0, 'num_ctx': 100, 'num_predict': 100}
+
+********
+
+Final Response:
+
+Creating a C++ application using Ollama with the `phi3` Large Language Model (LLM) involves several steps including setting up your development environment, integrating LlamaCPP, initializing the Ollama model, and then making requests to the language model. Below is a step-by-step guide along with code snippets to help you through this process.
+
+### Prerequisites
+
+1. **Install C++ Development Tools:** Ensure you have a C++ compiler installed (like `g++` or `clang`). On Linux, these tools are typically available via package managers (`sudo apt install build-essential` for Debian-based systems).
+
+2. **Get LlamaCPP Library:** Download and set up the LlamaCPP library which will facilitate communication with Ollama.
+
+3. **Ollama Model Setup:** Ensure you have access to the `phi3` model through Ollama and it's correctly configured on your machine.
+
+### Step-by-Step Guide
+
+#### 1. Setting Up Your Project
+
+Create a new directory for your project:
+
+```bash
+mkdir my_llm_app
+cd my_llm_app
+```
+
+#### 2. Initialize CMake Project
+
+Create a `CMakeLists.txt` file to manage the build process:
+
+```cmake
+cmake_minimum_required(VERSION 3.10)
+project(LLMApp)
+
+set(CMAKE_CXX_STANDARD 17)
+
+# Add include directories for LlamaCPP
+include_directories(${LLAMA_CPP_INCLUDE_DIR})
+
+add_executable(llm_app main.cpp)
+
+# Link against LlamaCPP and any necessary libraries
+target_link_libraries(llm_app PRIVATE ${LLAMA_CPP_LIBRARIES})
+```
+
+Replace `${LLAMA_CPP_INCLUDE_DIR}` and `${LLAMA_CPP_LIBRARIES}` with the actual paths for your LlamaCPP installation.
+
+#### 3. Writing the Application
+
+Create a `main.cpp` file:
+
+```cpp
+#include <iostream>
+#include "llamacpp/llamacpp.hpp" // Adjust path if necessary
+
+int main() {
+    try {
+        std::string model_path = "/path/to/phi3/model"; // Set your Ollama phi3 model path
+        lla::ModelOptions options;
+        options.vocab_file = model_path + "/vocab.json";
+        options.merge_file = model_path + "/merge.txt";
+        options.scorer_file = model_path + "/scorer.bin";
+
+        auto model = std::make_shared<lla::LLM>(options);
+
+        // Prepare input
+        lla::Prompt prompt;
+        prompt.set_input("Hello, I am a language model. How can I assist you today?");
         
-        LLM ModelSelected: codestral:latest
-    
-        Prompt: Designing a flying car involves integrating elements of automotive engineering, aviation technology, and regulatory compliance. Consider key aspects such as propulsion systems, aerodynamics, lightweight materials, safety features, control mechanisms, energy efficiency, and certification processes for both road and air travel. What are the primary engineering challenges one must address to successfully create a functional flying car?
-    
-        Reason: Codestral:latest is designed with an emphasis on coding and technical tasks, which makes it particularly suited for tackling complex engineering projects such as building a flying car. While Mistral-large:latest might have a larger parameter size suggesting potentially broader general knowledge, Codestral's specialized focus on technology-related prompts allows it to more effectively address specific engineering challenges like propulsion systems and material considerations that are crucial in developing a functional flying car. This makes it better suited for this task compared to other models which may not be as tailored towards such technical depth.
-    
-        Payload:
-        {'model': 'codestral:latest', 'messages': [{'role': 'user', 'content': 'Designing a flying car involves integrating elements of automotive engineering, aviation technology, and regulatory compliance. Consider key aspects such as propulsion systems, aerodynamics, lightweight materials, safety features, control mechanisms, energy efficiency, and certification processes for both road and air travel. What are the primary engineering challenges one must address to successfully create a functional flying car?'}], 'temperature': 1.0, 'num_ctx': 100, 'num_predict': 100}
+        // Generate response
+        auto results = model->generate(prompt);
 
-        Response:        
-    
-        1. **Propulsion Systems:** Flying cars would require both air and ground propulsion systems due to their dual-mode transportation functionality. This could include hybrid electric propeller drives, jet engines, or even solar-powered lifting technology. Developing efficient and safe propulsion systems is a significant challenge since traditional automobile engines produce too much noise for air travel, while conventional aircraft engines consume too much fuel for highway driving.
+        // Print out the generated text
+        for (const auto& token : results.tokens) {
+            std::cout << token.value << " ";
+        }
+    } catch (const std::exception &e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return 1;
+    }
 
-        2. **Aerodynamics:** Designing aerodynamically efficient vehicles requires addressing lift generation through wings or rotors to create upward thrust and minimize drag resistance during flight. Additionally, ground handling (steering, braking, cornering) might require unique techniques since standard automobile design principles may not apply in an aircraft-like configuration.
+    return 0;
+}
+```
 
-        3. **Lightweight Materials:** To increase energy efficiency, flying cars must be lightweight but durable. Fusing aluminum with carbon fiber composites or using new age light metals could help, but designing the structural integrity to handle both ground and aerial forces is an intricate task.
+#### 4. Building the Application
 
-        4. **Safety Features:** Incorporating safety features like collision avoidance systems, parachutes, airbags, etc., would be critical for flying cars' success. However, ensuring these systems function seamlessly in both flight and driving modes might require sophisticated engineering solutions that can adapt to varying environments.
+Make sure you have CMake installed:
 
-        5. **Control Mechanisms:** Developing control mechanisms compatible with both road and air travel is a significant challenge due to different physical environments. Implementing auto-landing technology for emergency situations could address this issue, but it also requires robust navigational systems.
+```bash
+cmake -S . -B build
+cmake --build build
+```
 
-        6. **Energy Efficiency:** Since battery or fuel capacity affects flight range and speed significantly, achieving high energy efficiency while maintaining enough power reserves is vital. This will require optimizing the use of energy storage solutions such as batteries, supercapacitors, or hydrogen fuel cells for long flights but also providing rapid recharging options when parked on the ground.
+This will generate an executable in the `build` directory.
 
-        7. **Certification Processes:** Complying with aviation regulations concerning flight safety, noise emissions, and airspace management is critical in creating a flying car. Furthermore, regulatory bodies must also consider the unique aspects of road and air transportation to develop certification standards suitable for such vehicles.
+### Explanation of Code Snippets
 
-        8. **Pilotless Technology:** To allow for fully autonomous driving both on land and in the air, flying cars would require sophisticated artificial intelligence systems capable of recognizing and reacting to various scenarios present during aerial travel. Additionally, these AI solutions must conform to safety standards concerning passenger well-being while adhering to relevant regulations.
+- **Model Initialization:** We create a `ModelOptions` object to specify paths for essential model files (`vocab.json`, `merge.txt`, and `scorer.bin`). These are necessary for loading the LLM into memory.
+  
+- **Prompt Setup:** A prompt is created with input text. This demonstrates how you would interact with the language model.
 
-        9. **Legislative Framework:** Creating a legal framework for the safe and regulated operation of flying cars would require extensive cooperation between lawmakers, regulators, automotive engineers, aviation specialists, and consumers. Establishing rules for airspace management, pilot requirements, vehicle registration, insurance policies, etc., are all critical steps to ensure successful commercial adoption of flying cars.
+- **Generation:** We call the `generate` method on our model object, which takes a prompt and returns generated tokens (the output from the model).
 
-        10. **Public Acceptance:** Convincing the public that flying cars are safe, practical, and desirable will be an essential element in their success. Developing a compelling business case for consumers while addressing concerns about affordability, noise pollution, infrastructure requirements, and overall environmental impact could help gain mass acceptance for this innovative mode of transportation.
+- **Error Handling:** Basic exception handling captures any errors that occur during the process, providing a useful error message to help diagnose issues.
 
-        These engineering challenges require interdisciplinary collaboration and innovation, utilizing advanced research and development strategies to create functional flying cars that meet all necessary regulatory compliance standards while providing a superior user experience and addressing various socio-economic aspects related to its commercialization.
-        Total Time taken: 38.018s
-    ```
+### Additional Considerations
+
+- **Model Path Configuration:** Ensure that you correctly point to where your `phi3` Ollama model files are stored on disk.
+  
+- **Dependencies Management:** If LlamaCPP or other dependencies require additional libraries, ensure they're linked in the CMake file.
+
+- **Platform Specifics:** Paths and library linking might differ slightly across platforms (Windows, macOS vs Linux).
+
+By following these steps, you should have a basic yet functional application that integrates Ollama's `phi3` LLM with LlamaCPP to generate text responses. Adjust paths and configurations as needed based on your setup.
+********
+
+Total Time taken: 43.802s
+
 
 # Further research
 
