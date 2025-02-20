@@ -6,12 +6,12 @@
 
 # Use an LLM to Choose the LLM for a task or best prompt to execute
 
-With the adverse LLM in existence today, it is difficult to choose the best LLM for a task. This project aims to use an LLM to choose the best LLM for a task or the best prompt to execute.
+With the diverse LLMs in existence today, it is difficult to choose the best LLM for a task. This project aims to use an LLM to choose the best LLM for a task or the best prompt to execute.
 
 
 ## Overall Goal
 
-Most LLMs will have a 1 line description to explain the overall scope of it function. LLMs also have a description with examples on how to best use the LLM from a native speaking language.
+Most LLMs have a one-line description to explain the overall scope of their function. LLMs also have descriptions with examples on how to best use the LLM from a native speaking language.
 
 We should be able to use an LLM that will be trained to select the best LLM based on the description, speed, and knowledge base of the LLM. The LLM will also generate a prompt for the selected LLM to execute the task.
 
@@ -23,27 +23,26 @@ Is there a way to use an LLM to choose the best LLM for a task or the best promp
 
 ## Arguments
 
-prompt
-system_instructions
-model
-format_response
+* prompt
+* system_instructions
+* model
+* format_response
 
 #### What is already known about this topic
 
-* there are models that already contain descriptions and examples on how to use the LLM
-* you could do ask an LLM to see specific examples about a model or it's description
-* the challenges of asking an LLM to choose the best LLM for a task or the best prompt to execute is that there may be some registered models that don't have descriptions or examples, nor do they accurately descibe the model.
-* the possibility of finding the best LLM for a task or the best prompt to execute is that there may be a way to use an LLM to choose the best LLM for a task or the best prompt to execute.
+* There are models that already contain descriptions and examples on how to use the LLM.
+* You could ask an LLM to see specific examples about a model or its description.
+* The challenges of asking an LLM to choose the best LLM for a task or the best prompt to execute include the possibility that some registered models don't have descriptions or examples, nor do they accurately describe the model.
+* The possibility of finding the best LLM for a task or the best prompt to execute is that there may be a way to use an LLM to choose the best LLM for a task or the best prompt to execute.
 
 #### What this research is exploring
 
 <!-- Free-format; use the topics that are applicable to your exploration  -->
-
 * We assume a properly registered model describes its behavior and accurately provides examples on how to use the LLM.
-* With this assumption in minde we employ a dynamic approach to choose the best LLM for a task or the best prompt to execute. 
+* With this assumption in mind, we employ a dynamic approach to choose the best LLM for a task or the best prompt to execute.
 * We query the description and example and dynamically use the prompt template approach to generate a prompt for the selected LLM to execute the task.
 * We are building an Agent that will be trained to select the best LLM based on the description, speed, and knowledge base of the LLM. The Agent will also generate a prompt for the selected LLM to execute the task.
-* We are exploring the idea of a general purpose LLM that can be used to choose the best LLM for a task or the best prompt to
+* We are exploring the idea of a general-purpose LLM that can be used to choose the best LLM for a task or the best prompt to execute.
 
 #### Implications for practice
 
@@ -51,9 +50,9 @@ format_response
 
 * If the assumption holds true, then we can use an LLM to choose the best LLM for a task or the best prompt to execute.
 * It will be easier to prompt and execute tasks with the best LLM for the task.
-* By accomplishing the aforementioned, we can optimize an orchestration for choosing LLMs for a task or the best prompt to execute.
+By accomplishing the aforementioned, we can optimize an orchestration for choosing LLMs for a task or the best prompt to execute.
 * This will allow us to better understand various LLMs and their capabilities and limitations.
-* ...
+
 
 # Research Method
 
@@ -63,11 +62,11 @@ Ollama has a /docs endpoint that provides a list of all the models and their des
 
 Different models have different descriptions and examples on how to use the LLM. We will use the descriptions and examples to train the Agent to select the best LLM for a task or the best prompt to execute.
 
-The challenge is that not all the properties of a Model are populated with data. For example, the parameter size is not populated for all models.
+The challenge is that not all the properties of a model are populated with data. For example, the parameter size is not populated for all models.
 
-When we do have data, we use the english worded description to send to the phi4:latest model to help us select which model to use based on the list of models loaded in Ollama.
+When we do have data, we use the English worded description to send to the phi4:latest model to help us select which model to use based on the list of models loaded in Ollama.
 
-The assumption is the public model is trained on information about each loaded model public description and example set. We ask the model to select the best model for a task based on the description and examples of the models and provide an explanation of why the model was selected.
+The assumption is the public model is trained on information about each loaded model's public description and example set. We ask the model to select the best model for a task based on the description and examples of the models and provide an explanation of why the model was selected.
 
 # Results
 
@@ -132,8 +131,7 @@ Describe the results achieved through your research process.
 
 We could further research the following:
     
-1. Utilize different prompting styles to select a diffent model and measure it's speed and accuracy.
-    
+* Utilize different prompting styles to select a diffent model and measure it's speed and accuracy.
 
 # Code References - Examples
     
