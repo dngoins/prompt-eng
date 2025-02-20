@@ -195,7 +195,7 @@ if __name__ == "__main__":
     
     MODEL = evaluate_models(models)
     MODEL = MODEL['name']
-    if LOGGING: print(f'BestModel: {MODEL}')
+    if LOGGING: print(f'\n**********\nOllama Registered Parameter Size BestModel:\n{MODEL}\n*******\n')
 
     # If TEMPLATE_BEFORE is empty or blank then use the following prompt:
     # 'You are an agent that searches for LLMs and selects the best LLM based on its description, speed, and knowledge  base. You also creates LLM prompts for the selected LLM'
@@ -204,7 +204,7 @@ if __name__ == "__main__":
         TEMPLATE_AFTER = 'Only return the name of the LLM and corresponding prompt, nothing else, no metadata, no header, no comments, no dashes, ONLY THE LLM Name and PROMPT. Use the following format: {"model": "GPT-4:latest", "prompt": "LLM Prompt", "reason": "GPT uses a fast and efficient model that is able to generate text quickly and accurately on the most widely used topics dealing with science"}'
 
     PROMPT = TEMPLATE_BEFORE + '\n' + _PROMPT + '\n' + TEMPLATE_AFTER
-    if LOGGING: print(f'Prompt: {PROMPT}')
+    if LOGGING: print(f'Choose Model Prompt: {PROMPT}')
 
     payload = create_payload(
                          target=TARGET,   
@@ -215,7 +215,7 @@ if __name__ == "__main__":
                          num_predict=100)
 
     time, response = model_req(payload=payload)
-    if time: print(f'{MODEL} Selection Time taken: {time}s')
+    if time: print(f'{MODEL} LLM Selected Time taken: {time}s')
     if LOGGING: print(response);
     
     # first remove the 'json' prefix from the response
@@ -256,5 +256,5 @@ if __name__ == "__main__":
 
     real_time, real_response = model_req(payload=real_payload)
 
-    print(real_response)
+    print(f'\n********\nFinal Response:\n{real_response}\n********\n')
     if real_time: print(f'Total Time taken: {real_time + time}s')
