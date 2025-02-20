@@ -136,6 +136,7 @@ def model_req(payload=None):
     headers["Content-Type"] = "application/json"
     if api_key: headers["Authorization"] = f"Bearer {api_key}"
 
+    print(f'Payload:\n{payload}')
     # Send out request to Model Provider
     try:
         start_time = time.time()
@@ -186,14 +187,12 @@ if __name__ == "__main__":
     TEMPLATE_BEFORE = args.system_instructions
     TEMPLATE_AFTER = args.format_response
     LOGGING = args.logging
-
-    # ollama_client = ollama()
-    # model_list = ollama_client.list_models()
-    # for model in model_list: print(f"Model Name: {model.name}, Version: {model.version}, Description: {model.description}")
-
+    
     models =   list_models()
-    if LOGGING: print(models)
+    # if LOGGING: print(models)
 
+    model_names = [model['name'] for model in models]
+    
     MODEL = evaluate_models(models)
     MODEL = MODEL['name']
     if LOGGING: print(f'BestModel: {MODEL}')
@@ -201,14 +200,15 @@ if __name__ == "__main__":
     # If TEMPLATE_BEFORE is empty or blank then use the following prompt:
     # 'You are an agent that searches for LLMs and selects the best LLM based on its description, speed, and knowledge  base. You also creates LLM prompts for the selected LLM'
     if not TEMPLATE_BEFORE:
-        TEMPLATE_BEFORE = 'You are an agent that searches for LLMs and selects the best LLM based on its description, speed, and knowledge base. Only select from models that are available in your model listing. You also creates LLM prompts for the selected LLM. When you select the LLM provide a detailed explanation of why you selected that LLM. Explain the strengths and weaknesses of the LLM and how it compares to other LLMs.'    
+        TEMPLATE_BEFORE = f'You are an agent that searches for LLMs and selects the best LLM based on its description, parameter size, speed, and knowledge base. Only select from the model names: {model_names}. Based on the parameter size, {MODEL} is the best model, but choose another if its description better matches the prompt. As an agent, you also create LLM prompts for the selected LLM. When you select the LLM provide a detailed explanation of why you selected that LLM. Explain the strengths and weaknesses of the LLM and how it compares to other LLMs.'    
         TEMPLATE_AFTER = 'Only return the name of the LLM and corresponding prompt, nothing else, no metadata, no header, no comments, no dashes, ONLY THE LLM Name and PROMPT. Use the following format: {"model": "GPT-4:latest", "prompt": "LLM Prompt", "reason": "GPT uses a fast and efficient model that is able to generate text quickly and accurately on the most widely used topics dealing with science"}'
 
     PROMPT = TEMPLATE_BEFORE + '\n' + _PROMPT + '\n' + TEMPLATE_AFTER
+    if LOGGING: print(f'Prompt: {PROMPT}')
 
     payload = create_payload(
                          target=TARGET,   
-                         model=MODEL, 
+                         model="phi4:latest", 
                          prompt=PROMPT, 
                          temperature=1.0, 
                          num_ctx=100, 
@@ -234,8 +234,8 @@ if __name__ == "__main__":
             REASON = json_response['reason']
             
             # if MODEL doesn't have : in it then add :latest to it
-            if ':' not in MODEL:
-                MODEL = MODEL + ':latest'
+            #if ':' not in MODEL:
+            #    MODEL = MODEL + ':latest'
         
             if LOGGING:
                 print(f"Model: {MODEL}")
