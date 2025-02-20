@@ -1,25 +1,23 @@
 ![GenI-Banner](https://github.com/genilab-fau/genial-fau.github.io/blob/8f1a2d3523f879e1082918c7bba19553cb6e7212/images/geni-lab-banner.png?raw=true)
 
-# Use an LLM to Choose the LLM for a task or best prompt to execute
 
-1-liner description of your project
-
-# With the adverse LLM in existence today, it is difficult to choose the best LLM for a task. This project aims to use an LLM to choose the best LLM for a task or the best prompt to execute.
-
-
-## Overall Goal:
-
-### Most LLMs will have a 1 line description to explain the overall scope of it function. LLMs also have a description with examples on how to best use the LLM from a native speaking language.
-
-### We should be able to use an LLM that will be trained to select the best LLM based on the description, speed, and knowledge base of the LLM. The LLM will also generate a prompt for the selected LLM to execute the task.
-
-### Hypothesis: There exists a way to use an LLM to choose the best LLM for a task or the best prompt to execute.
-
-  
 * Authors: [Dwight Goins](http://www.github.com/dngoins) 
 * Academic Supervisor: [Dr. Fernando Koch](http://www.fernandokoch.me)
 
-  
+# Use an LLM to Choose the LLM for a task or best prompt to execute
+
+
+    With the adverse LLM in existence today, it is difficult to choose the best LLM for a task. This project aims to use an LLM to choose the best LLM for a task or the best prompt to execute.
+
+
+## Overall Goal
+
+    Most LLMs will have a 1 line description to explain the overall scope of it function. LLMs also have a description with examples on how to best use the LLM from a native speaking language.
+
+    We should be able to use an LLM that will be trained to select the best LLM based on the description, speed, and knowledge base of the LLM. The LLM will also generate a prompt for the selected LLM to execute the task.
+
+### Hypothesis: There exists a way to use an LLM to choose the best LLM for a task or the best prompt to execute.
+
 # Research Question 
 
 Is there a way to use an LLM to choose the best LLM for a task or the best prompt to execute?
@@ -37,7 +35,6 @@ format_response
 * you could do ask an LLM to see specific examples about a model or it's description
 * the challenges of asking an LLM to choose the best LLM for a task or the best prompt to execute is that there may be some registered models that don't have descriptions or examples, nor do they accurately descibe the model.
 * the possibility of finding the best LLM for a task or the best prompt to execute is that there may be a way to use an LLM to choose the best LLM for a task or the best prompt to execute.
-
 
 #### What this research is exploring
 
@@ -84,13 +81,14 @@ Describe the results achieved through your research process.
     Payload:
     {'model': 'phi4:latest', 'messages': [{'role': 'user', 'content': 'You are an agent that searches for LLMs and selects the best LLM based on its description, parameter size, speed, and knowledge base. Only select from the model names: [\'Llama-3.2-3B-Instruct\', \'Llama-3.2-11B-Vision-Instruct\', \'tinyllama:latest\', \'llava:latest\', \'codestral:latest\', \'phi4:latest\', \'gemma2:27b\', \'qwen2:latest\', \'mistral-large:latest\']. Based on the parameter size, mistral-large:latest is the best model, but choose another if its description better matches the prompt. As an agent, you also create LLM prompts for the selected LLM. When you select the LLM provide a detailed explanation of why you selected that LLM. Explain the strengths and weaknesses of the LLM and how it compares to other LLMs.\nhelp me with building a flying car\nOnly return the name of the LLM and corresponding prompt, nothing else, no metadata, no header, no comments, no dashes, ONLY THE LLM Name and PROMPT. Use the following format: {"model": "GPT-4:latest", "prompt": "LLM Prompt", "reason": "GPT uses a fast and efficient model that is able to generate text quickly and accurately on the most widely used topics dealing with science"}'}], 'temperature': 1.0, 'num_ctx': 100, 'num_predict': 100}
     mistral-large:latest Selection Time taken: 9.791s
-    ```json
+    
+    json
     {
     "model": "Llama-3.2-11B-Vision-Instruct",
     "prompt": "Explore innovative designs and technological advancements required for building a flying car, focusing on aerodynamics, propulsion systems, safety features, and regulatory challenges.",
     "reason": "The Llama-3.2-11B-Vision-Instruct model is selected because it integrates vision capabilities alongside its instruct-based framework, which can be advantageous in understanding and generating content related to designs and visual technology aspects of a flying car. Its 11 billion parameters offer substantial comprehension and generation abilities without being as computationally demanding as larger models like mistral-large:latest. This makes Llama-3.2-11B-Vision-Instruct a well-balanced choice, particularly for tasks that might benefit from visual understanding and detailed technical discussion."
     }
-    ```
+    
     Model: Llama-3.2-11B-Vision-Instruct
     Prompt: Explore innovative designs and technological advancements required for building a flying car, focusing on aerodynamics, propulsion systems, safety features, and regulatory challenges.
     Reason: The Llama-3.2-11B-Vision-Instruct model is selected because it integrates vision capabilities alongside its instruct-based framework, which can be advantageous in understanding and generating content related to designs and visual technology aspects of a flying car. Its 11 billion parameters offer substantial comprehension and generation abilities without being as computationally demanding as larger models like mistral-large:latest. This makes Llama-3.2-11B-Vision-Instruct a well-balanced choice, particularly for tasks that might benefit from visual understanding and detailed technical discussion.
@@ -107,13 +105,14 @@ Describe the results achieved through your research process.
     Payload:
     {'model': 'phi4:latest', 'messages': [{'role': 'user', 'content': 'You are an agent that searches for LLMs and selects the best LLM based on its description, parameter size, speed, and knowledge base. Only select from the model names: [\'Llama-3.2-3B-Instruct\', \'Llama-3.2-11B-Vision-Instruct\', \'tinyllama:latest\', \'codestral:latest\', \'llava:latest\', \'phi4:latest\', \'qwen2:latest\', \'gemma2:27b\', \'mistral-large:latest\']. Based on the parameter size, mistral-large:latest is the best model, but choose another if its description better matches the prompt. As an agent, you also create LLM prompts for the selected LLM. When you select the LLM provide a detailed explanation of why you selected that LLM. Explain the strengths and weaknesses of the LLM and how it compares to other LLMs.\nhelp me with building a flying car\nOnly return the name of the LLM and corresponding prompt, nothing else, no metadata, no header, no comments, no dashes, ONLY THE LLM Name and PROMPT. Use the following format: {"model": "GPT-4:latest", "prompt": "LLM Prompt", "reason": "GPT uses a fast and efficient model that is able to generate text quickly and accurately on the most widely used topics dealing with science"}'}], 'temperature': 1.0, 'num_ctx': 100, 'num_predict': 100}
     mistral-large:latest Selection Time taken: 10.594s
-    ```json
+    
+    json
     {
     "model": "codestral:latest",
     "prompt": "Designing a flying car involves integrating elements of automotive engineering, aviation technology, and regulatory compliance. Consider key aspects such as propulsion systems, aerodynamics, lightweight materials, safety features, control mechanisms, energy efficiency, and certification processes for both road and air travel. What are the primary engineering challenges one must address to successfully create a functional flying car?",
     "reason": "Codestral:latest is designed with an emphasis on coding and technical tasks, which makes it particularly suited for tackling complex engineering projects such as building a flying car. While Mistral-large:latest might have a larger parameter size suggesting potentially broader general knowledge, Codestral's specialized focus on technology-related prompts allows it to more effectively address specific engineering challenges like propulsion systems and material considerations that are crucial in developing a functional flying car. This makes it better suited for this task compared to other models which may not be as tailored towards such technical depth."
     }
-    ```
+    
     Model: codestral:latest
     Prompt: Designing a flying car involves integrating elements of automotive engineering, aviation technology, and regulatory compliance. Consider key aspects such as propulsion systems, aerodynamics, lightweight materials, safety features, control mechanisms, energy efficiency, and certification processes for both road and air travel. What are the primary engineering challenges one must address to successfully create a functional flying car?
     Reason: Codestral:latest is designed with an emphasis on coding and technical tasks, which makes it particularly suited for tackling complex engineering projects such as building a flying car. While Mistral-large:latest might have a larger parameter size suggesting potentially broader general knowledge, Codestral's specialized focus on technology-related prompts allows it to more effectively address specific engineering challenges like propulsion systems and material considerations that are crucial in developing a functional flying car. This makes it better suited for this task compared to other models which may not be as tailored towards such technical depth.
@@ -146,9 +145,9 @@ Describe the results achieved through your research process.
 # Further research
 
 We could further research the following:
+    
     1. Utilize different prompting styles to select a diffent model and measure it's speed and accuracy.
     
-
 
 # Code References - Examples
     
