@@ -193,14 +193,14 @@ if __name__ == "__main__":
 
     model_names = [model['name'] for model in models]
     
-    MODEL = evaluate_models(models)
-    MODEL = MODEL['name']
-    if LOGGING: print(f'\n**********\nOllama Registered Parameter Size BestModel:\n{MODEL}\n*******\n')
+    EVAL_MODEL = evaluate_models(models)
+    EVAL_MODEL = EVAL_MODEL['name']
+    if LOGGING: print(f'\n**********\nOllama Registered Parameter Size BestModel:\n{EVAL_MODEL}\n*******\n')
 
     # If TEMPLATE_BEFORE is empty or blank then use the following prompt:
     # 'You are an agent that searches for LLMs and selects the best LLM based on its description, speed, and knowledge  base. You also creates LLM prompts for the selected LLM'
     if not TEMPLATE_BEFORE:
-        TEMPLATE_BEFORE = f'You are an agent that searches for LLMs and selects the best LLM based on its description, parameter size, speed, and knowledge base. Only select from the model names: {model_names}. Based on the parameter size, {MODEL} is the best model, but choose another if its description better matches the prompt. As an agent, you also create LLM prompts for the selected LLM. When you select the LLM provide a detailed explanation of why you selected that LLM. Explain the strengths and weaknesses of the LLM and how it compares to other LLMs.'    
+        TEMPLATE_BEFORE = f'You are an agent that searches for LLMs and selects the best LLM based on its description, parameter size, speed, and knowledge base. Only select from the model names: {model_names}. Based on the parameter size, {EVAL_MODEL} is the best model, but choose another if its description better matches the prompt. As an agent, you also create LLM prompts for the selected LLM. When you select the LLM provide a detailed explanation of why you selected that LLM. Explain the strengths and weaknesses of the LLM and how it compares to other LLMs.'    
         TEMPLATE_AFTER = 'Only return the name of the LLM and corresponding prompt, nothing else, no metadata, no header, no comments, no dashes, ONLY THE LLM Name and PROMPT. Use the following format: {"model": "GPT-4:latest", "prompt": "LLM Prompt", "reason": "GPT uses a fast and efficient model that is able to generate text quickly and accurately on the most widely used topics dealing with science"}'
 
     PROMPT = TEMPLATE_BEFORE + '\n' + _PROMPT + '\n' + TEMPLATE_AFTER
@@ -208,14 +208,14 @@ if __name__ == "__main__":
 
     payload = create_payload(
                          target=TARGET,   
-                         model="phi4:latest", 
+                         model=MODEL, 
                          prompt=PROMPT, 
                          temperature=1.0, 
                          num_ctx=100, 
                          num_predict=100)
 
     time, response = model_req(payload=payload)
-    if time: print(f'{MODEL} LLM Selected Time taken: {time}s')
+    if time: print(f'{MODEL} Selected Time taken: {time}s')
     if LOGGING: print(response);
     
     # first remove the 'json' prefix from the response
@@ -229,7 +229,7 @@ if __name__ == "__main__":
     if response:
         try:
             json_response = json.loads(response)
-            MODEL = json_response['model']
+            EVAL_MODEL = json_response['model']
             PROMPT = json_response['prompt']
             REASON = json_response['reason']
             
@@ -238,7 +238,7 @@ if __name__ == "__main__":
             #    MODEL = MODEL + ':latest'
         
             if LOGGING:
-                print(f"Model: {MODEL}")
+                print(f"{MODEL} Selected Model: {EVAL_MODEL}")
                 print(f"Prompt: {PROMPT}")
                 print(f"Reason: {REASON}")
            
@@ -248,7 +248,7 @@ if __name__ == "__main__":
         
 
     real_payload = create_payload( target = TARGET,
-                         model=MODEL, 
+                         model=EVAL_MODEL, 
                          prompt=PROMPT, 
                          temperature=1.0, 
                          num_ctx=100, 
