@@ -191,10 +191,10 @@ if __name__ == "__main__":
     models =   list_models()
     # if LOGGING: print(models)
 
-    model_names = [model['name'] for model in models]
+    model_names = [model['id'] for model in models]
     
     EVAL_MODEL = evaluate_models(models)
-    EVAL_MODEL = EVAL_MODEL['name']
+    EVAL_MODEL = EVAL_MODEL['id']
     if LOGGING: print(f'\n**********\nOllama Registered Parameter Size BestModel:\n{EVAL_MODEL}\n*******\n')
 
     # If TEMPLATE_BEFORE is empty or blank then use the following prompt:
